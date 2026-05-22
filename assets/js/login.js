@@ -62,3 +62,15 @@ form.addEventListener('submit', (e) => {
         form.querySelectorAll('input, button[type=submit]').forEach(el => el.disabled = true);
     }
 });
+
+document.getElementById("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  // show message
+  document.getElementById("successMsg").style.display = "block";
+
+  // redirect after delay
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 1000);
+});
