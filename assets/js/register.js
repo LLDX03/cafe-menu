@@ -124,6 +124,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         } else {
             showError('email', result.message || "Registration failed");
         }
+    
 
     } catch (err) {
         console.log(err);

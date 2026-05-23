@@ -55,22 +55,44 @@ pwEl.addEventListener('input', () => {
     pwErr.style.display = 'none';
 });
 
-form.addEventListener('submit', (e) => {
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (validate()) {
-        successMsg.style.display = 'block';
-        form.querySelectorAll('input, button[type=submit]').forEach(el => el.disabled = true);
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const res = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        // ❌ ALWAYS HIDE FIRST
+        document.getElementById("successMsg").style.display = "none";
+
+        if (data.success) {
+            const remember = document.getElementById("remember").checked;
+
+            const expiry = remember
+                ? Date.now() + 24 * 60 * 60 * 1000   // 1 day
+                : Date.now() + 60 * 60 * 1000;       // 1 hour
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("token_expiry", expiry);
+
+            window.location.href = "index.html";
+        }
+        
+        else {
+            alert(data.message || "Invalid login");
+        }
+
+    } catch (err) {
+        console.log(err);
+        alert("Server error");
     }
-});
-
-document.getElementById("loginForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  // show message
-  document.getElementById("successMsg").style.display = "block";
-
-  // redirect after delay
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 1000);
 });
